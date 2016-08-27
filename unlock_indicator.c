@@ -53,6 +53,8 @@ extern cairo_surface_t *img;
 
 /* Whether the image should be tiled. */
 extern bool tile;
+/* Whether the image should be centered. */
+extern bool center;
 /* The background color to use (in hex). */
 extern char color[7];
 
@@ -115,6 +117,17 @@ xcb_pixmap_t draw_image(uint32_t *resolution) {
     cairo_t *xcb_ctx = cairo_create(xcb_output);
 
     if (img) {
+        int32_t tx = 0;
+        int32_t ty = 0;
+        if (center) {
+            /* calculate the necessary translation to center the image */
+            int w = cairo_image_surface_get_width(img);
+            int h = cairo_image_surface_get_height(img);
+            /* assume that resolution[i] < 2^31 */
+            tx = ((int32_t) resolution[0] - w) / 2;
+            ty = ((int32_t) resolution[1] - h) / 2;
+            cairo_translate(xcb_ctx, tx, ty);
+        }
         if (!tile) {
             cairo_set_source_surface(xcb_ctx, img, 0, 0);
             cairo_paint(xcb_ctx);
@@ -124,10 +137,12 @@ xcb_pixmap_t draw_image(uint32_t *resolution) {
             pattern = cairo_pattern_create_for_surface(img);
             cairo_set_source(xcb_ctx, pattern);
             cairo_pattern_set_extend(pattern, CAIRO_EXTEND_REPEAT);
-            cairo_rectangle(xcb_ctx, 0, 0, resolution[0], resolution[1]);
+            cairo_rectangle(xcb_ctx, -tx, -ty, resolution[0], resolution[1]);
             cairo_fill(xcb_ctx);
             cairo_pattern_destroy(pattern);
         }
+        if (center)
+            cairo_translate(xcb_ctx, -tx, -ty);
     } else {
         char strgroups[3][3] = {{color[0], color[1], '\0'},
                                 {color[2], color[3], '\0'},

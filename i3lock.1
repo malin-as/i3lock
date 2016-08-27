@@ -8,7 +8,7 @@
 .fi
 ..
 
-.TH i3lock 1 "JANUARY 2012" Linux "User Manuals"
+.TH i3lock 1 "AUGUST 2016" Linux "User Manuals"
 
 .SH NAME
 i3lock \- improved screen locker
@@ -23,6 +23,7 @@ i3lock \- improved screen locker
 .RB [\|\-c
 .IR color \|]
 .RB [\|\-t\|]
+.RB [\|\-C\|]
 .RB [\|\-p
 .IR pointer\|]
 .RB [\|\-u\|]
@@ -82,6 +83,11 @@ format: rrggbb (i.e. ff0000 is red).
 .B \-t, \-\-tiling
 If an image is specified (via \-i) it will display the image tiled all over the screen
 (if it is a multi-monitor setup, the image is visible on all screens).
+
+.TP
+.B \-C, \-\-center
+If an image is specified (via \-i) it will display it in the center of the
+screen (applies to both normal and tiling mode).
 
 .TP
 .BI \-p\  win|default \fR,\ \fB\-\-pointer= win|default
